@@ -1270,13 +1270,43 @@
 
 
 <script>
-  // Paddle classic checkout links
+  // Paddle.js v2 checkout
+  var paddleReady = false;
+
+  function loadPaddle() {
+    var script = document.createElement('script');
+    script.src = 'https://cdn.paddle.com/paddle/v2/paddle.js';
+    script.onload = function() {
+      Paddle.Initialize({
+        token: 'live_a051eac2e3101e6c6c2e9b663c4',
+        checkout: {
+          settings: {
+            displayMode: 'overlay',
+            theme: 'dark',
+            locale: 'en'
+          }
+        }
+      });
+      paddleReady = true;
+    };
+    document.head.appendChild(script);
+  }
+
+  loadPaddle();
+
   function openCheckout(plan) {
-    if (plan === 'starter') {
-      window.open('https://checkout.paddle.com/product/pri_01kszpm9737pry9atgw9j9z6er?vendor=348663', '_blank');
-    } else {
-      window.open('https://checkout.paddle.com/product/pri_01kszps3qvth647ygvj3xaxsxe?vendor=348663', '_blank');
+    var priceId = plan === 'starter'
+      ? 'pri_01kszpm9737pry9atgw9j9z6er'
+      : 'pri_01kszps3qvth647ygvj3xaxsxe';
+
+    if (!paddleReady) {
+      setTimeout(function() { openCheckout(plan); }, 500);
+      return;
     }
+
+    Paddle.Checkout.open({
+      items: [{ priceId: priceId, quantity: 1 }]
+    });
   }
 
   // Scroll animations
