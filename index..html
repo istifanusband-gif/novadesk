@@ -1,0 +1,1302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NovaDesk — AI Customer Support for Growing Businesses</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #080808;
+    --white: #f5f3ef;
+    --cream: #f0ece3;
+    --accent: #c8f04d;
+    --accent2: #4dffc3;
+    --gray: #1a1a1a;
+    --gray2: #2a2a2a;
+    --muted: #888;
+    --border: rgba(255,255,255,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,8,8,0.85);
+    backdrop-filter: blur(20px);
+  }
+
+  .logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.5px;
+    color: var(--white);
+    text-decoration: none;
+  }
+
+  .logo span { color: var(--accent); }
+
+  nav ul {
+    display: flex;
+    gap: 36px;
+    list-style: none;
+  }
+
+  nav ul a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 400;
+    transition: color 0.2s;
+  }
+
+  nav ul a:hover { color: var(--white); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: var(--black) !important;
+    padding: 10px 22px;
+    border-radius: 100px;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    transition: transform 0.2s, box-shadow 0.2s !important;
+  }
+
+  .nav-cta:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(200,240,77,0.3);
+    color: var(--black) !important;
+  }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 140px 24px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-glow {
+    position: absolute;
+    width: 700px;
+    height: 700px;
+    background: radial-gradient(circle, rgba(200,240,77,0.12) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .hero-glow2 {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(77,255,195,0.07) 0%, transparent 70%);
+    top: 30%;
+    right: 10%;
+    pointer-events: none;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--gray2);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 36px;
+    animation: fadeUp 0.8s ease forwards;
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(48px, 7vw, 88px);
+    font-weight: 800;
+    line-height: 1.0;
+    letter-spacing: -3px;
+    max-width: 900px;
+    margin-bottom: 28px;
+    animation: fadeUp 0.8s ease 0.1s both;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    font-size: clamp(16px, 2vw, 20px);
+    color: var(--muted);
+    max-width: 560px;
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 48px;
+    animation: fadeUp 0.8s ease 0.2s both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeUp 0.8s ease 0.3s both;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--black);
+    padding: 16px 36px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(200,240,77,0.35);
+  }
+
+  .btn-ghost {
+    color: var(--muted);
+    padding: 16px 28px;
+    border-radius: 100px;
+    font-size: 15px;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn-ghost:hover {
+    color: var(--white);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .hero-social-proof {
+    margin-top: 64px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    animation: fadeUp 0.8s ease 0.4s both;
+  }
+
+  .avatars {
+    display: flex;
+  }
+
+  .avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2px solid var(--black);
+    margin-left: -8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+  }
+
+  .avatar:first-child { margin-left: 0; }
+
+  .a1 { background: #4d79ff; }
+  .a2 { background: #ff4d79; }
+  .a3 { background: #4dffc3; color: var(--black); }
+  .a4 { background: #ffc34d; color: var(--black); }
+
+  .proof-text {
+    font-size: 14px;
+    color: var(--muted);
+  }
+
+  .proof-text strong { color: var(--white); }
+
+  /* DASHBOARD PREVIEW */
+  .dashboard-wrap {
+    padding: 0 24px 120px;
+    display: flex;
+    justify-content: center;
+    animation: fadeUp 0.8s ease 0.5s both;
+  }
+
+  .dashboard {
+    background: var(--gray);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    width: 100%;
+    max-width: 900px;
+    overflow: hidden;
+    box-shadow: 0 40px 100px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.05);
+  }
+
+  .dash-bar {
+    background: var(--gray2);
+    padding: 14px 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .dot-r { background: #ff5f57; }
+  .dot-y { background: #febc2e; }
+  .dot-g { background: #28c840; }
+
+  .dash-url {
+    flex: 1;
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    background: rgba(255,255,255,0.05);
+    border-radius: 6px;
+    padding: 4px 12px;
+    margin: 0 20px;
+  }
+
+  .dash-body {
+    padding: 32px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+  }
+
+  .dash-card {
+    background: var(--gray2);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .dash-card-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .dash-card-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .dash-card-value.green { color: var(--accent); }
+  .dash-card-value.teal { color: var(--accent2); }
+
+  .dash-card-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  .dash-chat {
+    grid-column: span 2;
+    background: var(--gray2);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .chat-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+
+  .chat-bubble {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 12px;
+    align-items: flex-start;
+  }
+
+  .chat-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  .chat-icon.user { background: #4d79ff; color: white; }
+  .chat-icon.ai { background: var(--accent); color: var(--black); }
+
+  .chat-text {
+    background: rgba(255,255,255,0.05);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 13px;
+    color: #ccc;
+    line-height: 1.5;
+  }
+
+  .chat-text.ai-msg {
+    background: rgba(200,240,77,0.08);
+    border: 1px solid rgba(200,240,77,0.15);
+    color: var(--white);
+  }
+
+  /* LOGOS */
+  .logos-section {
+    padding: 60px 24px;
+    text-align: center;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .logos-label {
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--muted);
+    margin-bottom: 36px;
+  }
+
+  .logos-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  .logo-item {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    color: rgba(255,255,255,0.2);
+    letter-spacing: -0.5px;
+  }
+
+  /* FEATURES */
+  .section {
+    padding: 120px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+
+  .section-sub {
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 520px;
+    font-weight: 300;
+    line-height: 1.7;
+    margin-bottom: 64px;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+
+  .feature-card {
+    background: var(--gray);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 32px;
+    transition: border-color 0.3s, transform 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(200,240,77,0.3), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(200,240,77,0.2);
+    transform: translateY(-4px);
+  }
+
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 44px;
+    height: 44px;
+    background: rgba(200,240,77,0.1);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .feature-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: -0.3px;
+  }
+
+  .feature-desc {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  /* HOW IT WORKS */
+  .how-section {
+    padding: 120px 24px;
+    background: var(--gray);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .how-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    margin-top: 64px;
+    position: relative;
+  }
+
+  .steps::before {
+    content: '';
+    position: absolute;
+    top: 28px;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), var(--accent), var(--border), transparent);
+  }
+
+  .step {
+    text-align: center;
+    padding: 0 20px;
+  }
+
+  .step-num {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--black);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--accent);
+    margin: 0 auto 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .step-title {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .step-desc {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* PRICING */
+  .pricing-section {
+    padding: 120px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .pricing-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 780px;
+    margin: 64px auto 0;
+    text-align: left;
+  }
+
+  .pricing-card {
+    background: var(--gray);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px;
+    position: relative;
+    transition: transform 0.3s;
+  }
+
+  .pricing-card:hover { transform: translateY(-4px); }
+
+  .pricing-card.featured {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--black);
+  }
+
+  .plan-badge {
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--black);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 4px 14px;
+    border-radius: 100px;
+    border: 1px solid var(--accent);
+  }
+
+  .plan-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 20px;
+    color: var(--muted);
+  }
+
+  .pricing-card.featured .plan-name { color: rgba(0,0,0,0.6); }
+
+  .plan-price {
+    font-family: 'Syne', sans-serif;
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .plan-period {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  .pricing-card.featured .plan-period { color: rgba(0,0,0,0.5); }
+
+  .plan-features {
+    list-style: none;
+    margin-bottom: 36px;
+  }
+
+  .plan-features li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    color: #ccc;
+  }
+
+  .pricing-card.featured .plan-features li {
+    border-bottom-color: rgba(0,0,0,0.08);
+    color: rgba(0,0,0,0.8);
+  }
+
+  .plan-features li:last-child { border-bottom: none; }
+
+  .check { color: var(--accent); font-size: 14px; }
+  .pricing-card.featured .check { color: var(--black); }
+
+  .plan-btn {
+    display: block;
+    text-align: center;
+    padding: 14px;
+    border-radius: 100px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: none;
+    transition: all 0.2s;
+    cursor: pointer;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .plan-btn-outline {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--white);
+  }
+
+  .plan-btn-outline:hover {
+    border-color: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.05);
+  }
+
+  .plan-btn-dark {
+    background: var(--black);
+    color: var(--accent);
+  }
+
+  .plan-btn-dark:hover {
+    background: #111;
+  }
+
+  /* TESTIMONIALS */
+  .testimonials {
+    padding: 120px 24px;
+    background: var(--gray);
+    border-top: 1px solid var(--border);
+  }
+
+  .testimonials-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .testi-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin-top: 64px;
+    text-align: left;
+  }
+
+  .testi-card {
+    background: var(--black);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+  }
+
+  .testi-stars {
+    color: var(--accent);
+    font-size: 14px;
+    margin-bottom: 14px;
+    letter-spacing: 2px;
+  }
+
+  .testi-text {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #ccc;
+    font-weight: 300;
+    margin-bottom: 20px;
+  }
+
+  .testi-author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .testi-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+  }
+
+  .testi-name {
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .testi-role {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* CTA */
+  .cta-section {
+    padding: 120px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-glow {
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(200,240,77,0.1) 0%, transparent 70%);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .cta-section h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(36px, 5vw, 64px);
+    font-weight: 800;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    position: relative;
+  }
+
+  .cta-section p {
+    color: var(--muted);
+    font-size: 18px;
+    font-weight: 300;
+    margin-bottom: 44px;
+    position: relative;
+  }
+
+  /* EMAIL CAPTURE */
+  .email-form {
+    display: flex;
+    gap: 12px;
+    max-width: 480px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .email-input {
+    flex: 1;
+    background: var(--gray);
+    border: 1px solid var(--border);
+    border-radius: 100px;
+    padding: 16px 24px;
+    color: var(--white);
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .email-input:focus { border-color: rgba(200,240,77,0.4); }
+  .email-input::placeholder { color: var(--muted); }
+
+  .email-btn {
+    background: var(--accent);
+    color: var(--black);
+    border: none;
+    border-radius: 100px;
+    padding: 16px 28px;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+    white-space: nowrap;
+  }
+
+  .email-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(200,240,77,0.3);
+  }
+
+  .cta-note {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 16px;
+    position: relative;
+  }
+
+  /* FOOTER */
+  footer {
+    padding: 48px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1100px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+
+  .footer-logo {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 18px;
+    color: var(--white);
+  }
+
+  .footer-logo span { color: var(--accent); }
+
+  .footer-links {
+    display: flex;
+    gap: 28px;
+  }
+
+  .footer-links a {
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13px;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--white); }
+
+  .footer-copy {
+    color: var(--muted);
+    font-size: 13px;
+  }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* SUCCESS MESSAGE */
+  .success-msg {
+    display: none;
+    color: var(--accent);
+    font-size: 15px;
+    margin-top: 16px;
+    font-weight: 500;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 20px; }
+    nav ul { display: none; }
+    .features-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; gap: 40px; }
+    .steps::before { display: none; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .testi-grid { grid-template-columns: 1fr; }
+    .dash-body { grid-template-columns: 1fr; }
+    .dash-chat { grid-column: span 1; }
+    footer { flex-direction: column; text-align: center; }
+    .email-form { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">Nova<span>Desk</span></a>
+  <ul>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#how">How it works</a></li>
+    <li><a href="#pricing">Pricing</a></li>
+    <li><a href="#pricing" class="nav-cta">Start free trial</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="badge">
+    <div class="badge-dot"></div>
+    AI-powered customer support — live 24/7
+  </div>
+
+  <h1>Your store never<br>stops. Neither does<br><em>NovaDesk.</em></h1>
+
+  <p class="hero-sub">Give your Shopify or e-commerce store an AI agent that answers customer questions instantly — day or night. No hiring. No training. Just results.</p>
+
+  <div class="hero-actions">
+    <a href="#pricing" class="btn-primary">Start free — 14 days</a>
+    <a href="#how" class="btn-ghost">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 5.5L10 8L6.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      See how it works
+    </a>
+  </div>
+
+  <div class="hero-social-proof">
+    <div class="avatars">
+      <div class="avatar a1">S</div>
+      <div class="avatar a2">M</div>
+      <div class="avatar a3">J</div>
+      <div class="avatar a4">R</div>
+    </div>
+    <p class="proof-text"><strong>400+ store owners</strong> trust NovaDesk for support</p>
+  </div>
+</section>
+
+<!-- DASHBOARD PREVIEW -->
+<div class="dashboard-wrap fade-up">
+  <div class="dashboard">
+    <div class="dash-bar">
+      <div class="dot dot-r"></div>
+      <div class="dot dot-y"></div>
+      <div class="dot dot-g"></div>
+      <div class="dash-url">app.novadesk.io — Dashboard</div>
+    </div>
+    <div class="dash-body">
+      <div class="dash-card">
+        <div class="dash-card-label">Tickets resolved</div>
+        <div class="dash-card-value green">1,284</div>
+        <div class="dash-card-sub">↑ 94% auto-resolved this week</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-label">Avg. response time</div>
+        <div class="dash-card-value teal">0.8s</div>
+        <div class="dash-card-sub">vs 4hr industry average</div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-label">Customer satisfaction</div>
+        <div class="dash-card-value">98%</div>
+        <div class="dash-card-sub">↑ from 71% before NovaDesk</div>
+      </div>
+      <div class="dash-chat">
+        <div class="chat-label">Live agent conversation</div>
+        <div class="chat-bubble">
+          <div class="chat-icon user">C</div>
+          <div class="chat-text">Hi, where is my order? It's been 5 days and I haven't received any update.</div>
+        </div>
+        <div class="chat-bubble">
+          <div class="chat-icon ai">N</div>
+          <div class="chat-text ai-msg">Hi Sarah! I found your order #4821 — it shipped yesterday via UPS and is estimated to arrive tomorrow by 8pm. Here's your tracking link: ups.com/track/4821. Is there anything else I can help you with?</div>
+        </div>
+      </div>
+      <div class="dash-card">
+        <div class="dash-card-label">Hours saved</div>
+        <div class="dash-card-value">47hrs</div>
+        <div class="dash-card-sub">This month alone</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LOGOS -->
+<div class="logos-section fade-up">
+  <p class="logos-label">Works with your existing tools</p>
+  <div class="logos-row">
+    <div class="logo-item">Shopify</div>
+    <div class="logo-item">WooCommerce</div>
+    <div class="logo-item">Etsy</div>
+    <div class="logo-item">BigCommerce</div>
+    <div class="logo-item">Gorgias</div>
+    <div class="logo-item">Klaviyo</div>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="fade-up">
+    <span class="section-tag">Features</span>
+    <h2 class="section-title">Everything your support<br>team wishes it had</h2>
+    <p class="section-sub">NovaDesk learns your store, your products, and your policies — then handles everything automatically.</p>
+  </div>
+  <div class="features-grid fade-up">
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <div class="feature-title">Instant responses</div>
+      <p class="feature-desc">Customers get answers in under 1 second — not hours. NovaDesk never sleeps, never takes breaks.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🧠</div>
+      <div class="feature-title">Learns your store</div>
+      <p class="feature-desc">Paste your website URL and NovaDesk reads your products, FAQs, and policies automatically.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <div class="feature-title">Order tracking</div>
+      <p class="feature-desc">Connects to Shopify to give real-time order status, shipping updates, and delivery estimates.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔄</div>
+      <div class="feature-title">Returns & refunds</div>
+      <p class="feature-desc">Handles return requests, processes refund eligibility checks, and guides customers through your policy.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <div class="feature-title">Multilingual</div>
+      <p class="feature-desc">Responds in 50+ languages. Sell globally, support globally — without hiring multilingual agents.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <div class="feature-title">Smart analytics</div>
+      <p class="feature-desc">See what customers ask most, spot product issues early, and improve your store based on real data.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how-section" id="how">
+  <div class="how-inner">
+    <div class="fade-up" style="text-align:center">
+      <span class="section-tag">How it works</span>
+      <h2 class="section-title">Up and running in 10 minutes</h2>
+      <p class="section-sub" style="margin: 0 auto 0;">No developers. No complicated setup. Just paste, customize, and launch.</p>
+    </div>
+    <div class="steps fade-up">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Connect your store</div>
+        <p class="step-desc">Paste your website URL or connect Shopify in one click.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">AI learns everything</div>
+        <p class="step-desc">NovaDesk reads your products, FAQs, and store policies automatically.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Customize your agent</div>
+        <p class="step-desc">Set your brand name, tone, and any custom rules you want followed.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-title">Go live instantly</div>
+        <p class="step-desc">Embed one line of code on your site. Your AI agent is live and handling customers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section" id="pricing">
+  <div class="fade-up">
+    <span class="section-tag">Pricing</span>
+    <h2 class="section-title">Simple, honest pricing</h2>
+    <p class="section-sub" style="margin: 0 auto;">No hidden fees. No per-ticket charges. Just one flat monthly rate that saves you thousands in support costs.</p>
+  </div>
+  <div class="pricing-grid fade-up">
+    <!-- Starter -->
+    <div class="pricing-card">
+      <div class="plan-name">Starter</div>
+      <div class="plan-price">$49</div>
+      <div class="plan-period">per month · billed monthly</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> 1 AI support agent</li>
+        <li><span class="check">✓</span> Up to 500 conversations/mo</li>
+        <li><span class="check">✓</span> Shopify + WooCommerce integration</li>
+        <li><span class="check">✓</span> Email & chat support</li>
+        <li><span class="check">✓</span> Basic analytics dashboard</li>
+        <li><span class="check">✓</span> 14-day free trial</li>
+      </ul>
+      <a href="#signup" class="plan-btn plan-btn-outline">Start free trial</a>
+    </div>
+    <!-- Pro -->
+    <div class="pricing-card featured">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">Pro</div>
+      <div class="plan-price">$99</div>
+      <div class="plan-period">per month · billed monthly</div>
+      <ul class="plan-features">
+        <li><span class="check">✓</span> 3 AI support agents</li>
+        <li><span class="check">✓</span> Unlimited conversations</li>
+        <li><span class="check">✓</span> All integrations included</li>
+        <li><span class="check">✓</span> Priority support</li>
+        <li><span class="check">✓</span> Advanced analytics + reports</li>
+        <li><span class="check">✓</span> Custom branding & tone</li>
+      </ul>
+      <a href="#signup" class="plan-btn plan-btn-dark">Start free trial</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="testimonials-inner">
+    <div class="fade-up">
+      <span class="section-tag">Testimonials</span>
+      <h2 class="section-title">Store owners love NovaDesk</h2>
+    </div>
+    <div class="testi-grid fade-up">
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"I used to spend 3 hours a day answering the same questions. NovaDesk handles 95% of them automatically. I actually have time to grow my store now."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#4d79ff;color:white;">M</div>
+          <div>
+            <div class="testi-name">Marcus T.</div>
+            <div class="testi-role">Shopify store owner · 8,000 monthly orders</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"My customer satisfaction went from 72% to 96% in one month. The AI responds faster and more accurately than my previous support person."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#ff4d79;color:white;">S</div>
+          <div>
+            <div class="testi-name">Sarah K.</div>
+            <div class="testi-role">Etsy seller · handmade jewelry brand</div>
+          </div>
+        </div>
+      </div>
+      <div class="testi-card">
+        <div class="testi-stars">★★★★★</div>
+        <p class="testi-text">"Setup took 8 minutes. No joke. I pasted my URL, the AI read my whole store, and I was live. Best $99 I spend every month, by far."</p>
+        <div class="testi-author">
+          <div class="testi-avatar" style="background:#4dffc3;color:#000;">R</div>
+          <div>
+            <div class="testi-name">Ryan O.</div>
+            <div class="testi-role">WooCommerce · fitness equipment store</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA / EMAIL CAPTURE -->
+<section class="cta-section" id="signup">
+  <div class="cta-glow"></div>
+  <div class="fade-up">
+    <h2>Start your free<br>14-day trial today</h2>
+    <p>No credit card required. Cancel anytime. Setup in under 10 minutes.</p>
+    <div class="email-form">
+      <input type="email" class="email-input" placeholder="Enter your work email" id="emailInput">
+      <button class="email-btn" onclick="handleSignup()">Get started →</button>
+    </div>
+    <p class="cta-note">Join 400+ store owners already using NovaDesk</p>
+    <p class="success-msg" id="successMsg">🎉 You're on the list! We'll be in touch shortly.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Nova<span>Desk</span></div>
+  <div class="footer-links">
+    <a href="#features">Features</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#how">How it works</a>
+    <a href="mailto:hello@novadesk.io">Contact</a>
+  </div>
+  <p class="footer-copy">© 2025 NovaDesk. All rights reserved.</p>
+</footer>
+
+<script>
+  // Scroll animations
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+  // Email signup
+  function handleSignup() {
+    const email = document.getElementById('emailInput').value;
+    if (!email || !email.includes('@')) {
+      alert('Please enter a valid email address.');
+      return;
+    }
+    document.getElementById('emailInput').value = '';
+    document.getElementById('successMsg').style.display = 'block';
+    // Here you would send to your email marketing service
+    console.log('Lead captured:', email);
+  }
+
+  // Enter key on email
+  document.getElementById('emailInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') handleSignup();
+  });
+</script>
+</body>
+</html>
