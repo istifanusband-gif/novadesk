@@ -975,10 +975,6 @@
     .email-form { flex-direction: column; }
   }
 </style>
-  <script>
-    window.PaddleInitialized = false;
-  </script>
-  <script src="https://cdn.paddle.com/paddle/v2/paddle.js" onload="(function(){ Paddle.Initialize({ token: 'live_a051eac2e3101e6c6c2e9b663c4' }); window.PaddleInitialized = true; })()"></script>
 </head>
 <body>
 
@@ -1008,7 +1004,7 @@
   <p class="hero-sub">Give your Shopify or e-commerce store an AI agent that answers customer questions instantly — day or night. No hiring. No training. Just results.</p>
 
   <div class="hero-actions">
-    <button onclick="openCheckout('pri_01kszpm9737pry9atgw9j9z6er')" class="btn-primary">Start free — 14 days</button>
+    <button onclick="openCheckout('starter')" class="btn-primary">Start free — 14 days</button>
     <a href="#how" class="btn-ghost">
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 5.5L10 8L6.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
       See how it works
@@ -1179,7 +1175,7 @@
         <li><span class="check">✓</span> Basic analytics dashboard</li>
         <li><span class="check">✓</span> 14-day free trial</li>
       </ul>
-      <button onclick="openCheckout('pri_01kszpm9737pry9atgw9j9z6er')" class="plan-btn plan-btn-outline">Start free trial</button>
+      <button onclick="openCheckout('starter')" class="plan-btn plan-btn-outline">Start free trial</button>
     </div>
     <!-- Pro -->
     <div class="pricing-card featured">
@@ -1195,7 +1191,7 @@
         <li><span class="check">✓</span> Advanced analytics + reports</li>
         <li><span class="check">✓</span> Custom branding & tone</li>
       </ul>
-      <button onclick="openCheckout('pri_01kszps3qvth647ygvj3xaxsxe')" class="plan-btn plan-btn-dark">Start free trial</button>
+      <button onclick="openCheckout('pro')" class="plan-btn plan-btn-dark">Start free trial</button>
     </div>
   </div>
 </section>
@@ -1274,19 +1270,13 @@
 
 
 <script>
-  // Price IDs
-  const STARTER_PRICE_ID = 'pri_01kszpm9737pry9atgw9j9z6er';
-  const PRO_PRICE_ID = 'pri_01kszps3qvth647ygvj3xaxsxe';
-
-  // Open Paddle checkout
-  function openCheckout(priceId) {
-    if (typeof Paddle === 'undefined') {
-      alert('Payment system loading, please try again in a moment.');
-      return;
+  // Direct Paddle checkout links
+  function openCheckout(plan) {
+    if (plan === 'starter') {
+      window.open('https://buy.paddle.com/product/pri_01kszpm9737pry9atgw9j9z6er', '_blank');
+    } else {
+      window.open('https://buy.paddle.com/product/pri_01kszps3qvth647ygvj3xaxsxe', '_blank');
     }
-    Paddle.Checkout.open({
-      items: [{ priceId: priceId, quantity: 1 }],
-    });
   }
 
   // Scroll animations
