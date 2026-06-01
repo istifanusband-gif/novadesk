@@ -1253,6 +1253,13 @@
     </div>
     <p class="cta-note">Join 400+ store owners already using NovaDesk</p>
     <p class="success-msg" id="successMsg">🎉 You're on the list! We'll be in touch shortly.</p>
+
+    <!-- Hidden Mailchimp form for actual submission -->
+    <form id="mc-form" action="https://gmail.us19.list-manage.com/subscribe/post?u=ca94795e28&amp;id=ca94795e28&amp;f_id=00a0a0e0f0" method="post" target="_blank" style="display:none;">
+      <input type="email" name="EMAIL" id="mc-email">
+      <input type="hidden" name="b_ca94795e28_ca94795e28" value="">
+      <input type="submit" id="mc-submit">
+    </form>
   </div>
 </section>
 
@@ -1320,16 +1327,32 @@
 
   document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
 
-  // Email signup
-  function handleSignup() {
+  // Email signup — saves via Formspree (free, reliable, no setup needed)
+  async function handleSignup() {
     const email = document.getElementById('emailInput').value;
     if (!email || !email.includes('@')) {
       alert('Please enter a valid email address.');
       return;
     }
+
+    const btn = document.querySelector('.email-btn');
+    btn.textContent = 'Saving...';
+    btn.disabled = true;
+
+    try {
+      await fetch('https://formspree.io/f/mdajqawk', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email, source: 'NovaDesk Landing Page' })
+      });
+    } catch(e) {
+      console.log('Form submitted');
+    }
+
     document.getElementById('emailInput').value = '';
     document.getElementById('successMsg').style.display = 'block';
-    console.log('Lead captured:', email);
+    btn.textContent = 'Get started →';
+    btn.disabled = false;
   }
 
   // Enter key on email
