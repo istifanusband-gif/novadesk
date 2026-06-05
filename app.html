@@ -1766,6 +1766,21 @@ function hideAll() {
 window.addEventListener('DOMContentLoaded', () => {
   const saved = localStorage.getItem('novadesk_user');
   const onboarded = localStorage.getItem('novadesk_onboarded');
+  const params = new URLSearchParams(window.location.search);
+  
+  if (params.get('welcome') === 'true' && !saved) {
+    // New customer coming from Paddle checkout
+    hideAll();
+    document.getElementById('signupScreen').classList.remove('hidden');
+    // Show welcome toast
+    const toast = document.createElement('div');
+    toast.style.cssText = 'position:fixed;top:24px;left:50%;transform:translateX(-50%);background:#c8f04d;color:#000;padding:14px 28px;border-radius:100px;font-weight:700;font-size:14px;z-index:9999;animation:fadeUp 0.4s ease';
+    toast.textContent = '🎉 Payment successful! Create your account to get started.';
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 5000);
+    return;
+  }
+  
   if (saved && onboarded) {
     currentUser = JSON.parse(saved);
     loadDashboard();
